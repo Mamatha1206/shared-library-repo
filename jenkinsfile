@@ -1,0 +1,17 @@
+@Library('my-shared-lib') _
+
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/your-username/your-maven-project.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                mavenBuild('clean package')
+            }
+        }
+    }
+}
