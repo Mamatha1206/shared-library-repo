@@ -4,12 +4,13 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven 3.8.8' // This name must match the Maven tool in Jenkins "Global Tool Configuration"
+        maven 'Maven 3.8.8'
     }
 
-    environment {
-        // Define any environment variables if needed
-    }
+    // Remove or fill this if not used
+    // environment {
+    //     BUILD_ENV = 'production'
+    // }
 
     stages {
 
@@ -28,14 +29,14 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo 'Running unit tests...'
+                echo 'Running tests...'
                 sh 'mvn test'
             }
         }
 
-        stage('Archive Artifacts') {
+        stage('Archive') {
             steps {
-                echo 'Archiving build artifacts...'
+                echo 'Archiving JAR file...'
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
@@ -43,10 +44,11 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline succeeded!'
+            echo 'Build completed successfully!'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'Build failed. Check logs.'
         }
     }
 }
+
