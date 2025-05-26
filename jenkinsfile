@@ -1,17 +1,52 @@
-@Library('my-shared-lib') _
+@Library('my-shared-lib@main') _
 
 pipeline {
     agent any
+
+    tools {
+        maven 'Maven 3.8.8' // This name must match the Maven tool in Jenkins "Global Tool Configuration"
+    }
+
+    environment {
+        // Define any environment variables if needed
+    }
+
     stages {
+
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Mamatha1206/shared-library-repo'
+                git url: 'https://github.com/Mamatha1206/shared-library-repo.git', branch: 'main'
             }
         }
+
         stage('Build') {
             steps {
-                mavenBuild('clean package')
+                echo 'Building the project...'
+                sh 'mvn clean package'
             }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running unit tests...'
+                sh 'mvn test'
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                echo 'Archiving build artifacts...'
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
