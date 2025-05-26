@@ -1,54 +1,32 @@
-@Library('my-shared-lib@main') _
+@Library('sharedlib') _  // Load shared library
 
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven 3.8.8'
-    }
-
-    // Remove or fill this if not used
-    // environment {
-    //     BUILD_ENV = 'production'
-    // }
-
     stages {
-
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/Mamatha1206/shared-library-repo.git', branch: 'main'
+                git url: 'https://github.com/Mamatha1206/shared-library-repo', branch: 'main'
             }
         }
 
-        stage('Build') {
+        stage('Build with Maven') {
             steps {
-                echo 'Building the project...'
-                sh 'mvn clean package'
+                mavenBuild('clean install')  // Call function from shared library
             }
         }
-
         stage('Test') {
             steps {
-                echo 'Running tests...'
+                echo 'Running unit tests'
                 sh 'mvn test'
+                }
             }
-        }
-
-        stage('Archive') {
+        stage('Deploy') {
             steps {
-                echo 'Archiving JAR file...'
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'Build completed successfully!'
-        }
-        failure {
-            echo 'Build failed. Check logs.'
-        }
+                echo 'Deploying to development environment'
     }
 }
 
+
+    }
+}
