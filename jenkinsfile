@@ -3,6 +3,10 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven 3.8.8'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -15,18 +19,18 @@ pipeline {
                 mavenBuild('clean install')  // Call function from shared library
             }
         }
+
         stage('Test') {
             steps {
                 echo 'Running unit tests'
                 sh 'mvn test'
-                }
             }
+        }
+
         stage('Deploy') {
             steps {
                 echo 'Deploying to development environment'
-    }
-}
-
-
+            }
+        }
     }
 }
